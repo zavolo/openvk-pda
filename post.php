@@ -2,12 +2,12 @@
 ini_set('display_errors', 0);
 date_default_timezone_set('Europe/Moscow');
 session_start();
-if (empty($_SESSION['access_token']))
-{
-header('Location: /index.php');
-exit;
+if(empty($_SESSION['access_token'])){
+ header('Location: /');
+ die();
 }
 $access_token = $_SESSION['access_token'];
+$instance = $_SESSION['instance'];
 ?>
 <title>OpenVK PDA</title>
 <meta charset="utf-8">
@@ -35,7 +35,7 @@ $access_token = $_SESSION['access_token'];
 if(isset($_POST['token'])) {
 $owner_id = $_POST['owner_id'];
 $message = $_POST['message'];
-$service_url1 = "https://openvk.su/method/Wall.post?&access_token=$access_token&owner_id=$owner_id&message=$message";
+$service_url1 = "https://$instance/method/Wall.post?&access_token=$access_token&owner_id=$owner_id&message=$message";
 $curl1 = curl_init($service_url1);
 curl_setopt($curl1, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
 curl_setopt($curl1, CURLOPT_RETURNTRANSFER,true);
@@ -52,7 +52,7 @@ echo '
     <th>Запись</th>
    </tr>
    <tr>
-   <td><a href="http://openvk.co/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'">http://openvk.co/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'</a></td>
+   <td><a href="http://'.$instance.'/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'">http://'.$instance.'/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'</a></td>
    <td>'.$message.'</td>
    </tr>
   </table>

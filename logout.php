@@ -8,7 +8,7 @@ $dir1 = '.'.$_SESSION['uava'];
 unlink($dir1);
 }
 $_SESSION = array();
-header("Location: index.php");
-exit;
 session_destroy();
+header("Location: /");
+die();
 ?>

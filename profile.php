@@ -2,12 +2,12 @@
 ini_set('display_errors', 0);
 date_default_timezone_set('Europe/Moscow');
 session_start();
-if (empty($_SESSION['access_token']))
-{
-header('Location: /index.php');
-exit;
+if(empty($_SESSION['access_token'])){
+ header('Location: /');
+ die();
 }
 $access_token = $_SESSION['access_token'];
+$instance = $_SESSION['instance'];
 ?>
 <title>OpenVK PDA</title>
 <meta charset="utf-8">
@@ -31,7 +31,7 @@ $access_token = $_SESSION['access_token'];
 </tbody>
 </table>
 <?php
-$service_url = "https://openvk.su/method/Account.getProfileInfo?&access_token=$access_token";
+$service_url = "https://$instance/method/Account.getProfileInfo?&access_token=$access_token";
 $curl = curl_init($service_url);
 curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
 curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
@@ -42,7 +42,7 @@ $curl_response = curl_exec($curl);
 curl_close($curl);
 $curl_json = json_decode($curl_response, true);
 $userids = $curl_json['response']['id'];
-$userget = "https://openvk.su/method/Users.get?&user_ids=$userids&fields=verified,sex,,photo_100,status";
+$userget = "https://$instance/method/Users.get?&user_ids=$userids&fields=verified,sex,,photo_100,status";
 $curluserget = curl_init($userget);
 curl_setopt($curluserget, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
 curl_setopt($curluserget, CURLOPT_RETURNTRANSFER,true);
@@ -94,7 +94,7 @@ ID... <input type="text" name="uid"><button type="submit" name="post">Откры
 </form>
 <hr>
 <?php
-$wallgeturl = "https://openvk.su/method/Wall.get?owner_id=$owner_id&access_token=$access_token";
+$wallgeturl = "https://$instance/method/Wall.get?owner_id=$owner_id&access_token=$access_token";
 $wallget = curl_init($wallgeturl);
 curl_setopt($wallget, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
 curl_setopt($wallget, CURLOPT_RETURNTRANSFER,true);
@@ -114,7 +114,7 @@ $count = $wallget_json['response']['count'];
 <?php
 if(isset($_POST['post'])) {
 $message = $_POST['message'];
-$service_url1 = "https://openvk.su/method/Wall.post?&access_token=$access_token&owner_id=$owner_id&message=$message";
+$service_url1 = "https://$instance/method/Wall.post?&access_token=$access_token&owner_id=$owner_id&message=$message";
 $curl1 = curl_init($service_url1);
 curl_setopt($curl1, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
 curl_setopt($curl1, CURLOPT_RETURNTRANSFER,true);
@@ -132,7 +132,7 @@ echo '
     <th>Запись</th>
    </tr>
    <tr>
-   <td><a href="http://openvk.co/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'">http://openvk.co/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'</a></td>
+   <td><a href="http://'.$instance.'/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'">http://'.$instance.'/wall'.$owner_id.'_'.$curl_json1['response']['post_id'].'</a></td>
    <td>'.$message.'</td>
    </tr>
   </table>
