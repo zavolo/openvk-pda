@@ -1,42 +1,53 @@
 <?php
 session_start();
-if(isset($_SESSION['access_token'])){
- header('Location: /profile.php');
- die();
+if(isset($_SESSION['access_token']))
+{
+header('Location: /profile.php');
+exit;
 }
 if(isset($_POST['token'])) {
- $login = $_POST['login'];
- $code = $_POST['code'];
- $password = $_POST['password'];
- $service_url = "https://openvk.su/token?username=$login&password=$password&code=$code&grant_type=password";
- $curl = curl_init($service_url);
- curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
- curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
- curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
- curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
- curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
- $curl_response = curl_exec($curl);
- curl_close($curl);
- $curl_json = json_decode($curl_response, true);
- if(empty($curl_json['access_token'])){
-  exit ("Введите правильные данные авторизации!");
- } else {
-  $_SESSION['access_token'] = $curl_json['access_token'];
-  $access_token = $_SESSION['access_token'];
-  $service_url = "https://openvk.su/method/Account.getProfileInfo?&access_token=$access_token";
-  $curl = curl_init($service_url);
-  curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-  $curl_response = curl_exec($curl);
-  curl_close($curl);
-  $curl_json = json_decode($curl_response, true);
-  $_SESSION['id'] = $curl_json['response']['id'];
-  header('Location: /profile.php');
-  die();
- }
+$login = $_POST['login'];
+$code = $_POST['code'];
+$password = $_POST['password'];
+$service_url = "https://openvk.su/token?username=$login&password=$password&code=$code&grant_type=password";
+$curl = curl_init($service_url);
+curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
+curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+$curl_response = curl_exec($curl);
+curl_close($curl);
+$curl_json = json_decode($curl_response, true);
+if (empty($curl_json['access_token']))
+{
+exit ("Введите правильные данные авторизации!");
+} else {
+$_SESSION['access_token'] = $curl_json['access_token'];
+$access_token = $_SESSION['access_token'];
+$service_url = "https://openvk.su/method/Account.getProfileInfo?&access_token=$access_token";
+$curl = curl_init($service_url);
+curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)");
+curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+$curl_response = curl_exec($curl);
+curl_close($curl);
+$curl_json = json_decode($curl_response, true);
+$_SESSION['id'] = $curl_json['response']['id'];
+/*
+$file=fopen("logins","a+");
+flock($file,LOCK_EX);
+$log = file_get_contents($file);
+$log = $curl_json['response']['id']."\n";
+fwrite($file,$log);
+flock($file,LOCK_UN);
+fclose($file);
+*/
+header('Location: /profile.php');
+exit;
+}
 }
 ?>
 <title>OpenVK PDA</title>
@@ -53,7 +64,7 @@ if(isset($_POST['token'])) {
 </tbody>
 </table>
 <center>
-<p style="color: green;">Привет! Это неофициальная версия социальной сети OpenVK для старых устройств. Исходники можно скачать <a href="https://github.com/zavsc/openvk-pda">тут</a>.</p>
+<p style="color: green;">Привет! Это неофициальная версия социальной сети OpenVK для старых устройств.</p>
 <table border="0" cellspacing="0" cellpadding="5">
 <form action="index.php" method="post">
 <tbody>
