@@ -1,4 +1,5 @@
 <?php
+//test
 session_start();
 $dir = $_SERVER["DOCUMENT_ROOT"]."/avatars";
 if(!is_dir($dir)) {
